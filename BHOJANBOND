@@ -1,0 +1,552 @@
+ import { Home, Plus, Search, User, Bell } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+interface BottomNavProps {
+  activeTab: string;
+  onTabChange: (tab: string) => void;
+}
+
+const navItems = [
+  { id: 'home', icon: Home, label: 'Home' },
+  { id: 'search', icon: Search, label: 'Explore' },
+  { id: 'post', icon: Plus, label: 'Post', isMain: true },
+  { id: 'notifications', icon: Bell, label: 'Alerts' },
+  { id: 'profile', icon: User, label: 'Profile' },
+];
+
+const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
+  return (
+    <nav className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-border/50">
+      <div className="flex items-center justify-around px-2 py-2 max-w-lg mx-auto">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = activeTab === item.id;
+          
+          if (item.isMain) {
+            return (
+              <button
+                key={item.id}
+                onClick={() => onTabChange(item.id)}
+                className="relative -mt-6"
+              >
+                <div className="gradient-hero p-4 rounded-full shadow-glow transition-transform duration-200 hover:scale-110 active:scale-95">
+                  <Icon className="w-6 h-6 text-primary-foreground" />
+                </div>
+              </button>
+            );
+          }
+          
+          return (
+            <button
+              key={item.id}
+              onClick={() => onTabChange(item.id)}
+              className={cn(
+                "flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all duration-200",
+                isActive 
+                  ? "text-primary bg-accent" 
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <Icon className={cn("w-5 h-5", isActive && "animate-bounce-soft")} />
+              <span className="text-xs font-medium">{item.label}</span>
+            </button>
+          );
+        })}
+      </div>
+    </nav>
+  );
+};
+
+export default BottomNav;
+[03-12-2025 18:50] Ramya: import { MapPin, Clock, Users, Leaf, Star } from 'lucide-react';
+import { FoodListing } from '@/types/food';
+import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
+
+interface FoodCardProps {
+  listing: FoodListing;
+  onClick: () => void;
+}
+
+const getFreshnessConfig = (freshness: FoodListing['freshness']) => {
+  switch (freshness) {
+    case 'fresh':
+      return { label: 'Fresh', className: 'bg-primary/10 text-primary border-primary/20' };
+    case 'good':
+      return { label: 'Good', className: 'bg-warning/10 text-warning border-warning/20' };
+    case 'consume-soon':
+      return { label: 'Consume Soon', className: 'bg-destructive/10 text-destructive border-destructive/20' };
+  }
+};
+
+const getTimeAgo = (date: Date) => {
+  const minutes = Math.floor((Date.now() - date.getTime()) / 60000);
+  if (minutes < 60) return ${minutes}m ago;
+  const hours = Math.floor(minutes / 60);
+  return ${hours}h ago;
+};
+
+const FoodCard = ({ listing, onClick }: FoodCardProps) => {
+  const freshnessConfig = getFreshnessConfig(listing.freshness);
+  
+  return (
+    <article
+      onClick={onClick}
+      className="bg-card rounded-2xl overflow-hidden shadow-card hover:shadow-elevated transition-all duration-300 cursor-pointer group animate-fade-in"
+    >
+      {/* Image Section */}
+      <div className="relative h-40 overflow-hidden">
+        <img
+          src={listing.image}
+          alt={listing.title}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 to-transparent" />
+        
+        {/* Freshness Badge */}
+        <Badge 
+          className={cn(
+            "absolute top-3 left-3 border font-semibold",
+            freshnessConfig.className
+          )}
+        >
+          {freshnessConfig.label}
+        </Badge>
+        
+        {/* Veg/Non-veg indicator */}
+        {listing.isVegetarian && (
+          <div className="absolute top-3 right-3 bg-primary/90 p-1.5 rounded-full">
+            <Leaf className="w-3.5 h-3.5 text-primary-foreground" />
+          </div>
+        )}
+        
+        {/* Distance */}
+        <div className="absolute bottom-3 left-3 flex items-center gap-1.5 text-card bg-foreground/80 backdrop-blur-sm px-2.5 py-1 rounded-full text-sm font-medium">
+          <MapPin className="w-3.5 h-3.5" />
+          {listing.location.distance}
+        </div>
+      </div>
+      
+      {/* Content Section */}
+      <div className="p-4">
+        <div className="flex items-start justify-between gap-2 mb-2">
+          <h3 className="font-bold text-lg text-foreground line-clamp-1 group-hover:text-primary transition-colors">
+            {listing.title}
+          </h3>
+          <div className="flex items-center gap-1 text-warning shrink-0">
+            <Star className="w-4 h-4 fill-current" />
+            <span className="text-sm font-semibold">{listing.organizer.rating}</span>
+          </div>
+        </div>
+        
+        <p className="text-muted-foreground text-sm line-clamp-2 mb-3">
+          {listing.description}
+        </p>
+        
+        {/* Meta Info */}
+        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+          <div className="flex items-center gap-1.5">
+            <Users className="w-4 h-4" />
+            <span>{listing.servings} servings</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Clock className="w-4 h-4" />
+            <span>{getTimeAgo(listing.postedAt)}</span>
+          </div>
+        </div>
+        
+        {/* Organizer */}
+        <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border">
+          <div className="w-8 h-8 rounded-full gradient-hero flex items-center justify-center text-primary-foreground font-bold text-sm">
+            {listing.organizer.name.charAt(0)}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-foreground truncate">
+              {listing.organizer.name}
+            </p>
+            <p className="text-xs text-muted-foreground truncate">
+              {listing.location.name}
+            </p>
+          </div>
+          {listing.organizer.verified && (
+            <Badge variant="secondary" className="text-xs">
+              Verified
+            </Badge>
+          )}
+        </div>
+      </div>
+    </article>
+  );
+};
+
+export default FoodCard;
+[03-12-2025 18:51] Ramya: import { MapPin, Clock, Users, Leaf, Star, Navigation, Phone, X, CheckCircle } from 'lucide-react';
+import { FoodListing } from '@/types/food';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { toast } from '@/hooks/use-toast';
+
+interface FoodDetailSheetProps {
+  listing: FoodListing | null;
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const getTimeRemaining = (date: Date) => {
+  const minutes = Math.floor((date.getTime() - Date.now()) / 60000);
+  if (minutes < 60) return ${minutes} minutes;
+  const hours = Math.floor(minutes / 60);
+  return ${hours} hours;
+};
+
+const FoodDetailSheet = ({ listing, isOpen, onClose }: FoodDetailSheetProps) => {
+  if (!listing) return null;
+  
+  const handleClaim = () => {
+    toast({
+      title: "Food Claimed! 🎉",
+      description: You're on your way to pick up ${listing.title}. The organizer has been notified.,
+    });
+    onClose();
+  };
+  
+  return (
+    <Sheet open={isOpen} onOpenChange={onClose}>
+      <SheetContent side="bottom" className="h-[85vh] rounded-t-3xl p-0 overflow-hidden">
+        {/* Close Button */}
+        <button 
+          onClick={onClose}
+          className="absolute top-4 right-4 z-10 bg-card/80 backdrop-blur-sm p-2 rounded-full hover:bg-card transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
+        
+        {/* Image */}
+        <div className="relative h-56">
+          <img 
+            src={listing.image} 
+            alt={listing.title}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+        </div>
+        
+        {/* Content */}
+        <div className="px-6 -mt-8 relative z-10 pb-32 overflow-y-auto max-h-[calc(85vh-224px)]">
+          <SheetHeader className="text-left mb-4">
+            <div className="flex items-start gap-3">
+              {listing.isVegetarian && (
+                <div className="bg-primary p-2 rounded-full shrink-0 mt-1">
+                  <Leaf className="w-4 h-4 text-primary-foreground" />
+                </div>
+              )}
+              <div>
+                <SheetTitle className="text-2xl font-display font-bold text-foreground">
+                  {listing.title}
+                </SheetTitle>
+                <p className="text-muted-foreground text-sm mt-1">
+                  {listing.description}
+                </p>
+              </div>
+            </div>
+          </SheetHeader>
+          
+          {/* Quick Stats */}
+          <div className="grid grid-cols-3 gap-3 mb-6">
+            <div className="bg-accent/50 rounded-xl p-3 text-center">
+              <Users className="w-5 h-5 mx-auto mb-1 text-primary" />
+              <p className="text-sm font-semibold text-foreground">{listing.servings}</p>
+              <p className="text-xs text-muted-foreground">Servings</p>
+            </div>
+            <div className="bg-accent/50 rounded-xl p-3 text-center">
+              <MapPin className="w-5 h-5 mx-auto mb-1 text-primary" />
+              <p className="text-sm font-semibold text-foreground">{listing.location.distance}</p>
+              <p className="text-xs text-muted-foreground">Away</p>
+            </div>
+            <div className="bg-accent/50 rounded-xl p-3 text-center">
+              <Clock className="w-5 h-5 mx-auto mb-1 text-secondary" />
+              <p className="text-sm font-semibold text-foreground">{getTimeRemaining(listing.expiresAt)}</p>
+              <p className="text-xs text-muted-foreground">Left</p>
+            </div>
+          </div>
+          
+          {/* Dietary Info */}
+          <div className="mb-6">
+            <h4 className="font-semibold text-foreground mb-2">Dietary Information</h4>
+            <div className="flex flex-wrap gap-2">
+              {listing.dietaryInfo.map((info) => (
+                <Badge key={info} variant="outline" className="rounded-full">
+                  {info}
+                </Badge>
+              ))}
+            </div>
+          </div>
+          
+          {/* Pickup Location */}
+          <div className="bg-card border border-border rounded-xl p-4 mb-6">
+            <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-primary" />
+              Pickup Location
+            </h4>
+            <p className="text-foreground font-medium">{listing.location.name}</p>
+            {listing.pickupInstructions && (
+              <p className="text-sm text-muted-foreground mt-1">
+                📌 {listing.pickupInstructions}
+              </p>
+            )}
+          </div>
+          
+          {/* Organizer */}
+          <div className="bg-card border border-border rounded-xl p-4">
+            <h4 className="font-semibold text-foreground mb-3">Shared by</h4>
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full gradient-hero flex items-center justify-center text-primary-foreground font-bold text-lg">
+                {listing.organizer.name.charAt(0)}
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <p className="font-semibold text-foreground">{listing.organizer.name}</p>
+                  {listing.organizer.verified && (
+                    <CheckCircle className="w-4 h-4 text-primary fill-primary/20" />
+                  )}
+                </div>
+                <div className="flex items-center gap-1 text-warning">
+                  <Star className="w-4 h-4 fill-current" />
+                  <span className="text-sm font-medium">{listing.organizer.rating} rating</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Fixed Bottom Actions */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 glass border-t border-border/50">
+          <div className="flex gap-3">
+            <Button variant="outline" size="lg" className="flex-1">
+              <Phone className="w-5 h-5" />
+              Call
+            </Button>
+            <Button variant="hero" size="lg" className="flex-[2]" onClick={handleClaim}>
+              <Navigation className="w-5 h-5" />
+              I'm Coming!
+            </Button>
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+};
+
+export default FoodDetailSheet;
+[03-12-2025 18:52] Ramya: import { useState } from 'react';
+import { FoodListing } from '@/types/food';
+import FoodCard from './FoodCard';
+import FoodDetailSheet from './FoodDetailSheet';
+import { cn } from '@/lib/utils';
+
+interface FoodListingsProps {
+  listings: FoodListing[];
+}
+
+const categories = [
+  { id: 'all', label: 'All' },
+  { id: 'meal', label: '🍛 Meals' },
+  { id: 'snack', label: '🥟 Snacks' },
+  { id: 'dessert', label: '🍮 Desserts' },
+];
+
+const FoodListings = ({ listings }: FoodListingsProps) => {
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedListing, setSelectedListing] = useState<FoodListing | null>(null);
+  
+  const filteredListings = selectedCategory === 'all' 
+    ? listings 
+    : listings.filter(l => l.category === selectedCategory);
+  
+  return (
+    <section className="px-4 pb-24">
+      {/* Section Header */}
+      <div className="flex items-center justify-between mb-4 mt-6">
+        <h2 className="font-display text-xl font-bold text-foreground">
+          Nearby Food
+        </h2>
+        <span className="text-sm text-muted-foreground">
+          {filteredListings.length} available
+        </span>
+      </div>
+      
+      {/* Category Filters */}
+      <div className="flex gap-2 mb-4 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
+        {categories.map((cat) => (
+          <button
+            key={cat.id}
+            onClick={() => setSelectedCategory(cat.id)}
+            className={cn(
+              "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-200",
+              selectedCategory === cat.id
+                ? "gradient-hero text-primary-foreground shadow-soft"
+                : "bg-card text-muted-foreground hover:bg-accent border border-border"
+            )}
+          >
+            {cat.label}
+          </button>
+        ))}
+      </div>
+      
+      {/* Food Grid */}
+      <div className="grid gap-4">
+        {filteredListings.map((listing, index) => (
+          <div 
+            key={listing.id}
+            style={{ animationDelay: ${index * 100}ms }}
+            className="animate-slide-up"
+          >
+            <FoodCard 
+              listing={listing} 
+              onClick={() => setSelectedListing(listing)}
+            />
+          </div>
+        ))}
+      </div>
+      
+      {filteredListings.length === 0 && (
+        <div className="text-center py-12">
+          <div className="text-4xl mb-3">🍽</div>
+          <p className="text-muted-foreground">No food available in this category</p>
+        </div>
+      )}
+      
+      {/* Detail Sheet */}
+      <FoodDetailSheet 
+        listing={selectedListing}
+        isOpen={!!selectedListing}
+        onClose={() => setSelectedListing(null)}
+      />
+    </section>
+  );
+};
+
+export default FoodListings;
+[03-12-2025 18:52] Ramya: import { MapPin, ChevronDown } from 'lucide-react';
+
+const Header = () => {
+  return (
+    <header className="sticky top-0 z-40 glass border-b border-border/50">
+      <div className="flex items-center justify-between px-4 py-3 max-w-lg mx-auto">
+        {/* Logo */}
+        <div className="flex items-center gap-2">
+          <div className="w-10 h-10 gradient-hero rounded-xl flex items-center justify-center shadow-soft">
+            <span className="text-xl">🍱</span>
+          </div>
+          <div>
+            <h1 className="font-display font-extrabold text-lg text-foreground tracking-tight">
+              BhojanBond
+            </h1>
+            <p className="text-xs text-muted-foreground -mt-0.5">Share Food, Spread Love</p>
+          </div>
+        </div>
+        
+        {/* Location */}
+        <button className="flex items-center gap-1.5 bg-accent/50 hover:bg-accent px-3 py-2 rounded-full transition-colors">
+          <MapPin className="w-4 h-4 text-primary" />
+          <span className="text-sm font-medium text-foreground">Coimbatore</span>
+          <ChevronDown className="w-4 h-4 text-muted-foreground" />
+        </button>
+      </div>
+    </header>
+  );
+};
+
+export default Header;
+[03-12-2025 18:53] Ramya: import { ArrowRight, Sparkles } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import heroImage from '@/assets/hero-sharing.jpg';
+
+interface HeroSectionProps {
+  onPostFood: () => void;
+}
+
+const HeroSection = ({ onPostFood }: HeroSectionProps) => {
+  return (
+    <section className="relative overflow-hidden rounded-2xl mx-4 mt-4">
+      {/* Background Image */}
+      <div className="absolute inset-0">
+        <img 
+          src={heroImage} 
+          alt="Community sharing food together"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-foreground/90 via-foreground/70 to-transparent" />
+      </div>
+      
+      {/* Content */}
+      <div className="relative z-10 p-6 min-h-[200px] flex flex-col justify-center">
+        <div className="flex items-center gap-2 mb-2">
+          <Sparkles className="w-5 h-5 text-secondary" />
+          <span className="text-secondary font-semibold text-sm">Reduce Food Waste</span>
+        </div>
+        
+        <h2 className="font-display text-2xl md:text-3xl font-extrabold text-card mb-2 max-w-[240px]">
+          Share Surplus,
+          <br />
+          <span className="text-secondary">Feed Communities</span>
+        </h2>
+        
+        <p className="text-card/80 text-sm mb-4 max-w-[220px]">
+          Connect with nearby people and share your leftover food instantly.
+        </p>
+        
+        <Button 
+          variant="warm" 
+          size="lg" 
+          onClick={onPostFood}
+          className="self-start"
+        >
+          Share Food Now
+          <ArrowRight className="w-5 h-5" />
+        </Button>
+      </div>
+      
+      {/* Decorative elements */}
+      <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-secondary/20 rounded-full blur-2xl" />
+      <div className="absolute -top-6 -right-12 w-32 h-32 bg-primary/20 rounded-full blur-3xl" />
+    </section>
+  );
+};
+
+export default HeroSection;
+[03-12-2025 18:54] Ramya: import { Bell, MapPin, Clock, CheckCircle, AlertCircle } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+interface Notification {
+  id: string;
+  type: 'new_food' | 'claimed' | 'expiring' | 'achievement';
+  title: string;
+  message: string;
+  time: string;
+  isRead: boolean;
+  image?: string;
+}
+
+const mockNotifications: Notification[] = [
+  {
+    id: '1',
+    type: 'new_food',
+    title: 'New Food Nearby!',
+    message: 'Fresh Biryani available at KIT College Canteen - 0.5 km away',
+    time: '5 min ago',
+    isRead: false,
+  },
+  {
+    id: '2',
+    type: 'claimed',
+    title: 'Food Claimed!',
+    message: 'Someone is coming to pick up your Samosas posting',
+    time: '15 min ago',
+    isRead: false,
+  },
+  {
+    id: '3',
+    type: 'expiring',
+    title: 'Expi
