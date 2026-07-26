@@ -1,0 +1,228 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f4f4f4;
+    color:#333;
+}
+
+nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:#2E8B57;
+    padding:15px 40px;
+    position:sticky;
+    top:0;
+}
+
+nav h1{
+    color:white;
+}
+
+nav ul{
+    display:flex;
+    list-style:none;
+}
+
+nav ul li{
+    margin-left:20px;
+}
+
+nav ul li a{
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.hero{
+    background:#E8F5E9;
+    text-align:center;
+    padding:60px 20px;
+}
+
+.logo{
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    margin-bottom:20px;
+}
+
+.hero h2{
+    color:#2E8B57;
+    font-size:40px;
+    margin-bottom:20px;
+}
+
+.hero p{
+    font-size:18px;
+    max-width:700px;
+    margin:auto;
+    margin-bottom:25px;
+}
+
+.hero-btn{
+    background:#2E8B57;
+    color:white;
+    border:none;
+    padding:12px 25px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:18px;
+}
+
+.hero-btn:hover{
+    background:#1d6b43;
+}
+
+.about{
+    padding:50px;
+    text-align:center;
+}
+
+.about h2{
+    color:#2E8B57;
+    margin-bottom:20px;
+}
+
+.features{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    flex-wrap:wrap;
+    padding:40px;
+}
+
+.card{
+    background:white;
+    width:260px;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.2);
+    text-align:center;
+}
+
+.card h3{
+    color:#2E8B57;
+    margin-bottom:10px;
+}
+
+.donation-form{
+    background:white;
+    width:450px;
+    margin:40px auto;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,.2);
+}
+
+.donation-form h2{
+    text-align:center;
+    margin-bottom:20px;
+    color:#2E8B57;
+}
+
+.donation-form input{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border:1px solid #ccc;
+    border-radius:6px;
+}
+
+.donation-form button{
+    width:100%;
+    padding:12px;
+    background:#2E8B57;
+    color:white;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:18px;
+}
+
+.donation-form button:hover{
+    background:#1d6b43;
+}
+
+#message{
+    text-align:center;
+    margin-top:15px;
+    color:green;
+    font-weight:bold;
+}
+
+.contact{
+    padding:40px;
+    text-align:center;
+}
+
+.contact h2{
+    color:#2E8B57;
+    margin-bottom:15px;
+}
+
+footer{
+    background:#2E8B57;
+    color:white;
+    text-align:center;
+    padding:15px;
+    margin-top:30px;
+}
+
+@media(max-width:768px){
+
+nav{
+flex-direction:column;
+}
+
+nav ul{
+flex-direction:column;
+text-align:center;
+}
+
+nav ul li{
+margin:10px 0;
+}
+
+.features{
+flex-direction:column;
+align-items:center;
+}
+
+.donation-form{
+width:90%;
+}
+
+.hero h2{
+font-size:30px;
+}
+.login-box{
+    width:350px;
+    margin:100px auto;
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 0 10px gray;
+    text-align:center;
+}
+
+.login-box input{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+}
+
+.login-box button{
+    width:100%;
+    padding:12px;
+    background:#2E8B57;
+    color:white;
+    border:none;
+    cursor:pointer;
+}
+}
