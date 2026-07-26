@@ -2,7 +2,7 @@
   <img src="BHOJANNNN.jpeg" alt="BhojanBond Logo" width="200">
 </p>
 
-# 🍱 BhojanBond# 🍱 BhojanBond
+# 🍱 BhojanBond
 
 ## Problem Statement
 Food waste and hunger exist simultaneously. BhojanBond helps connect surplus food donors with NGOs and volunteers.
