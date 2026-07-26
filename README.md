@@ -1,6 +1,3 @@
-<p align="center">
-  <img src="BHOJANNNN.jpeg" alt="BhojanBond Logo" width="200">
-</p>
 
 # 🍱 BhojanBond
 
