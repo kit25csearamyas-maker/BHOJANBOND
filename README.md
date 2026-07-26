@@ -23,4 +23,11 @@ BhojanBond is an AI-powered food redistribution platform that uses AI and automa
 InnovaHack Chapter 1 - 2026
 
 ## Team
-(Your Team Name)
+Team Name: Clover Crew
+
+
+Members:
+- Ramya S
+- Duraiyammal G
+- Nivin P
+- Keerthivasan A
